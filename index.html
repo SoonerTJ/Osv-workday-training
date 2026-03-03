@@ -1,0 +1,1158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OSV Workday Training Hub</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Syne:wght@700;800&display=swap');
+
+  :root {
+    --bg: #0a0e1a;
+    --surface: #111827;
+    --surface2: #1a2236;
+    --border: #1e2d47;
+    --accent: #00d4ff;
+    --accent2: #7c3aed;
+    --gold: #f59e0b;
+    --green: #10b981;
+    --red: #ef4444;
+    --text: #e2e8f0;
+    --muted: #64748b;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Space Grotesk', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* BG grid */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: 
+      linear-gradient(rgba(0,212,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,212,255,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .container { max-width: 900px; margin: 0 auto; padding: 0 20px; position: relative; z-index: 1; }
+
+  /* HEADER */
+  header {
+    padding: 40px 0 30px;
+    text-align: center;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 40px;
+  }
+
+  .logo-badge {
+    display: inline-block;
+    background: linear-gradient(135deg, var(--accent2), var(--accent));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-family: 'Syne', sans-serif;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(28px, 5vw, 48px);
+    font-weight: 800;
+    line-height: 1.1;
+    margin-bottom: 12px;
+  }
+
+  h1 span { color: var(--accent); }
+
+  .subtitle { color: var(--muted); font-size: 15px; }
+
+  /* SCORE BAR */
+  .score-bar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 24px;
+    padding: 16px 24px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    margin-bottom: 32px;
+    flex-wrap: wrap;
+  }
+
+  .score-item { text-align: center; }
+  .score-item .val { font-family: 'Syne', sans-serif; font-size: 28px; font-weight: 800; color: var(--accent); }
+  .score-item .lbl { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
+
+  /* NAV TABS */
+  .nav-tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 32px;
+    flex-wrap: wrap;
+  }
+
+  .tab-btn {
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--muted);
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: 0.5px;
+  }
+
+  .tab-btn:hover { border-color: var(--accent); color: var(--text); }
+  .tab-btn.active { background: var(--accent); border-color: var(--accent); color: #000; }
+
+  /* SECTIONS */
+  .section { display: none; animation: fadeIn 0.3s ease; }
+  .section.active { display: block; }
+
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* CARDS */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 28px;
+    margin-bottom: 20px;
+    transition: border-color 0.2s;
+  }
+
+  .card:hover { border-color: rgba(0,212,255,0.3); }
+
+  .card-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+
+  .card-icon {
+    width: 48px; height: 48px;
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+    flex-shrink: 0;
+  }
+
+  .card-icon.blue { background: rgba(0,212,255,0.1); }
+  .card-icon.purple { background: rgba(124,58,237,0.15); }
+  .card-icon.gold { background: rgba(245,158,11,0.1); }
+  .card-icon.green { background: rgba(16,185,129,0.1); }
+
+  .card-title { font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 700; margin-bottom: 4px; }
+  .card-desc { font-size: 13px; color: var(--muted); }
+
+  /* QUIZ */
+  .quiz-question {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    line-height: 1.5;
+    color: var(--text);
+  }
+
+  .options { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+
+  .option-btn {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 18px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: var(--surface2);
+    color: var(--text);
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: left;
+    line-height: 1.4;
+  }
+
+  .option-btn:hover:not(:disabled) { border-color: var(--accent); background: rgba(0,212,255,0.05); }
+  .option-btn.correct { border-color: var(--green); background: rgba(16,185,129,0.1); color: var(--green); }
+  .option-btn.wrong { border-color: var(--red); background: rgba(239,68,68,0.1); color: var(--red); }
+  .option-btn.reveal { border-color: var(--green); background: rgba(16,185,129,0.05); }
+
+  .option-letter {
+    width: 28px; height: 28px;
+    border-radius: 6px;
+    border: 1px solid currentColor;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px;
+    font-weight: 700;
+    flex-shrink: 0;
+    opacity: 0.7;
+  }
+
+  .feedback {
+    padding: 14px 18px;
+    border-radius: 10px;
+    font-size: 14px;
+    line-height: 1.5;
+    margin-bottom: 16px;
+    display: none;
+  }
+
+  .feedback.show { display: block; animation: fadeIn 0.3s ease; }
+  .feedback.correct-fb { background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.3); color: #6ee7b7; }
+  .feedback.wrong-fb { background: rgba(239,68,68,0.08); border: 1px solid rgba(239,68,68,0.3); color: #fca5a5; }
+
+  .btn-next {
+    padding: 12px 28px;
+    border-radius: 8px;
+    border: none;
+    background: var(--accent);
+    color: #000;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: none;
+    letter-spacing: 0.5px;
+  }
+
+  .btn-next.show { display: inline-block; }
+  .btn-next:hover { transform: translateY(-1px); box-shadow: 0 4px 20px rgba(0,212,255,0.3); }
+
+  .progress-bar {
+    height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+    margin-bottom: 20px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent2), var(--accent));
+    border-radius: 2px;
+    transition: width 0.4s ease;
+  }
+
+  .q-counter { font-size: 12px; color: var(--muted); margin-bottom: 8px; letter-spacing: 1px; }
+
+  /* FLASHCARDS */
+  .flashcard-scene {
+    perspective: 1000px;
+    margin-bottom: 24px;
+    cursor: pointer;
+  }
+
+  .flashcard-inner {
+    position: relative;
+    height: 200px;
+    transform-style: preserve-3d;
+    transition: transform 0.5s;
+  }
+
+  .flashcard-inner.flipped { transform: rotateY(180deg); }
+
+  .flashcard-front, .flashcard-back {
+    position: absolute;
+    inset: 0;
+    backface-visibility: hidden;
+    border-radius: 16px;
+    padding: 32px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  }
+
+  .flashcard-front {
+    background: linear-gradient(135deg, var(--surface2), var(--surface));
+    border: 1px solid var(--border);
+  }
+
+  .flashcard-back {
+    background: linear-gradient(135deg, rgba(0,212,255,0.08), rgba(124,58,237,0.08));
+    border: 1px solid rgba(0,212,255,0.3);
+    transform: rotateY(180deg);
+  }
+
+  .fc-label { font-size: 11px; letter-spacing: 2px; color: var(--muted); text-transform: uppercase; margin-bottom: 12px; }
+  .fc-term { font-family: 'Syne', sans-serif; font-size: 24px; font-weight: 800; color: var(--accent); }
+  .fc-def { font-size: 14px; line-height: 1.6; color: var(--text); }
+
+  .fc-nav {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+  }
+
+  .fc-btn {
+    padding: 10px 24px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text);
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .fc-btn:hover { border-color: var(--accent); }
+  .fc-count { color: var(--muted); font-size: 13px; min-width: 60px; text-align: center; }
+
+  /* SCENARIO */
+  .scenario-box {
+    background: linear-gradient(135deg, rgba(124,58,237,0.1), rgba(0,212,255,0.05));
+    border: 1px solid rgba(124,58,237,0.3);
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 20px;
+  }
+
+  .scenario-tag {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 20px;
+    background: rgba(124,58,237,0.2);
+    color: #a78bfa;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  .scenario-text {
+    font-size: 15px;
+    line-height: 1.7;
+    color: var(--text);
+  }
+
+  /* GLOSSARY */
+  .gloss-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; }
+
+  .gloss-item {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px 18px;
+    transition: all 0.2s;
+  }
+
+  .gloss-item:hover { border-color: rgba(0,212,255,0.3); transform: translateY(-2px); }
+  .gloss-term { font-weight: 700; color: var(--accent); margin-bottom: 6px; font-size: 14px; }
+  .gloss-def { font-size: 13px; color: var(--muted); line-height: 1.5; }
+
+  /* COMPLETE SCREEN */
+  .complete-screen {
+    text-align: center;
+    padding: 60px 20px;
+  }
+
+  .complete-screen .big-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 72px;
+    font-weight: 800;
+    background: linear-gradient(135deg, var(--accent2), var(--accent));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 8px;
+  }
+
+  .badge-row { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; margin: 24px 0; }
+
+  .badge {
+    padding: 8px 20px;
+    border-radius: 24px;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+  }
+
+  .badge.gold-badge { background: rgba(245,158,11,0.15); border: 1px solid rgba(245,158,11,0.4); color: var(--gold); }
+  .badge.blue-badge { background: rgba(0,212,255,0.1); border: 1px solid rgba(0,212,255,0.3); color: var(--accent); }
+
+  .btn-restart {
+    padding: 14px 36px;
+    border-radius: 10px;
+    border: none;
+    background: linear-gradient(135deg, var(--accent2), var(--accent));
+    color: #fff;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-top: 16px;
+  }
+
+  .btn-restart:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(0,212,255,0.25); }
+
+  /* SECTION TITLES */
+  .section-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 22px;
+    font-weight: 800;
+    margin-bottom: 6px;
+  }
+
+  .section-sub { font-size: 13px; color: var(--muted); margin-bottom: 24px; }
+
+  /* tag pill */
+  .pill {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    margin-left: 8px;
+    vertical-align: middle;
+  }
+  .pill.s1 { background: rgba(0,212,255,0.1); color: var(--accent); }
+  .pill.s2 { background: rgba(124,58,237,0.15); color: #a78bfa; }
+  .pill.s3 { background: rgba(16,185,129,0.1); color: #6ee7b7; }
+
+  @media (max-width: 600px) {
+    .nav-tabs { gap: 6px; }
+    .tab-btn { padding: 8px 14px; font-size: 12px; }
+    .card { padding: 20px; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <header>
+    <div class="logo-badge">OSV Learning Hub</div>
+    <h1>Workday Training<br><span>Reinforcement Center</span></h1>
+    <p class="subtitle">Sessions 1–3 · Methodology · Partner Landscape · Tenant Management</p>
+  </header>
+
+  <div class="score-bar">
+    <div class="score-item">
+      <div class="val" id="totalScore">0</div>
+      <div class="lbl">Points</div>
+    </div>
+    <div class="score-item">
+      <div class="val" id="correctCount">0</div>
+      <div class="lbl">Correct</div>
+    </div>
+    <div class="score-item">
+      <div class="val" id="streakCount">0</div>
+      <div class="lbl">🔥 Streak</div>
+    </div>
+    <div class="score-item">
+      <div class="val" id="quizProgress">0/18</div>
+      <div class="lbl">Answered</div>
+    </div>
+  </div>
+
+  <div class="nav-tabs">
+    <button class="tab-btn active" onclick="switchTab('quiz')">🎯 Quiz Game</button>
+    <button class="tab-btn" onclick="switchTab('flash')">🃏 Flashcards</button>
+    <button class="tab-btn" onclick="switchTab('scenario')">🧠 Scenarios</button>
+    <button class="tab-btn" onclick="switchTab('glossary')">📖 Glossary</button>
+  </div>
+
+  <!-- ===== QUIZ TAB ===== -->
+  <div class="section active" id="tab-quiz">
+    <div class="section-title">Knowledge Check Quiz</div>
+    <p class="section-sub">18 questions across all 3 sessions. Earn points for correct answers — streaks multiply your score!</p>
+
+    <div class="card" id="quizCard">
+      <div class="q-counter" id="qCounter">Question 1 of 18</div>
+      <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+      <div class="quiz-question" id="questionText"></div>
+      <div class="options" id="optionsDiv"></div>
+      <div class="feedback" id="feedbackDiv"></div>
+      <button class="btn-next" id="nextBtn" onclick="nextQuestion()">Next Question →</button>
+    </div>
+
+    <div id="completeScreen" style="display:none;">
+      <div class="complete-screen card">
+        <div style="font-size:48px;margin-bottom:12px;">🏆</div>
+        <div class="big-num" id="finalScore"></div>
+        <div style="font-size:20px;font-weight:700;margin-bottom:8px;">Final Score</div>
+        <div class="badge-row">
+          <span class="badge blue-badge" id="finalCorrect"></span>
+          <span class="badge gold-badge" id="finalBadge"></span>
+        </div>
+        <div style="color:var(--muted);font-size:14px;margin-bottom:24px;" id="finalMsg"></div>
+        <button class="btn-restart" onclick="restartQuiz()">Play Again 🔄</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== FLASHCARDS TAB ===== -->
+  <div class="section" id="tab-flash">
+    <div class="section-title">Flashcards</div>
+    <p class="section-sub">Click a card to reveal the definition. Navigate through all 20 key terms.</p>
+
+    <div class="flashcard-scene" onclick="flipCard()">
+      <div class="flashcard-inner" id="flashcardInner">
+        <div class="flashcard-front">
+          <div class="fc-label">Term</div>
+          <div class="fc-term" id="fcTerm"></div>
+          <div style="color:var(--muted);font-size:12px;margin-top:16px;">Click to reveal definition</div>
+        </div>
+        <div class="flashcard-back">
+          <div class="fc-label">Definition</div>
+          <div class="fc-def" id="fcDef"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="fc-nav">
+      <button class="fc-btn" onclick="prevCard()">← Prev</button>
+      <span class="fc-count" id="fcCount">1 / 20</span>
+      <button class="fc-btn" onclick="nextCard()">Next →</button>
+    </div>
+
+    <div style="text-align:center;margin-top:16px;">
+      <button class="fc-btn" onclick="shuffleCards()" style="background:rgba(0,212,255,0.08);border-color:rgba(0,212,255,0.3);color:var(--accent)">🔀 Shuffle</button>
+    </div>
+  </div>
+
+  <!-- ===== SCENARIO TAB ===== -->
+  <div class="section" id="tab-scenario">
+    <div class="section-title">Real-World Scenarios</div>
+    <p class="section-sub">Apply your knowledge. Read the situation and pick the best response.</p>
+    <div id="scenarioContainer"></div>
+  </div>
+
+  <!-- ===== GLOSSARY TAB ===== -->
+  <div class="section" id="tab-glossary">
+    <div class="section-title">Quick Reference Glossary</div>
+    <p class="section-sub">All key terms from Sessions 1–3. Hover to highlight.</p>
+    <div class="gloss-grid" id="glossGrid"></div>
+  </div>
+
+</div>
+
+<script>
+// ============================================================
+// DATA
+// ============================================================
+
+const quizData = [
+  // SESSION 1 - Methodology
+  {
+    session: 1,
+    q: "What does the implementation type 'New' refer to at OSV?",
+    opts: [
+      "A customer switching from ADP to OSV services",
+      "A customer already live on Workday adding a new SKU",
+      "A customer not currently on Workday implementing a Workday SKU with OSV services",
+      "A customer re-implementing due to a failed deployment"
+    ],
+    correct: 2,
+    explain: "A 'New' implementation is OSV's most common type — the customer is not yet on Workday and is implementing a SKU (like HCM or payroll) with OSV services for the first time."
+  },
+  {
+    session: 1,
+    q: "What is 'Phase X' in Workday implementation terminology?",
+    opts: [
+      "A pilot phase before the full rollout",
+      "A customer already live on a Workday SKU who is adding another new SKU",
+      "Workday's term for a failed implementation restart",
+      "An OSV-only term for customers switching payroll providers"
+    ],
+    correct: 1,
+    explain: "Phase X means the customer is already live in production on some Workday SKU and is now adding a new one (e.g., adding Canadian Payroll when they're live on HCM)."
+  },
+  {
+    session: 1,
+    q: "What is 'Phase Y' and who uses this term?",
+    opts: [
+      "Workday's term for full-suite implementations",
+      "A deployment partner term for complex migrations",
+      "An OSV-only term for customers live on Workday payroll who are switching service providers (e.g., from ADP to OSV)",
+      "A Workday term for the second phase of a Launch Now deployment"
+    ],
+    correct: 2,
+    explain: "Phase Y is an OSV-only term. Workday and deployment partners won't recognize it. It refers to customers already live on Workday who are swapping out their service provider to OSV."
+  },
+  {
+    session: 1,
+    q: "What is Launch Now (Workday Go) primarily designed for?",
+    opts: [
+      "Large enterprise customers with complex configurations",
+      "Medium enterprise customers (~7,500 employees) with phased approach",
+      "Very small businesses (~1,000 and below) needing fast, low-cost activation",
+      "Phase X customers adding a second SKU"
+    ],
+    correct: 2,
+    explain: "Launch Now targets Workday's smallest customers as a response to market competition with platforms like Paylocity. It's a restricted-config, fast activation — 10-12 weeks for HCM+Payroll."
+  },
+  {
+    session: 1,
+    q: "A customer purchased Workday in January but won't go live until March. When do they start paying Workday subscription fees?",
+    opts: [
+      "When they go live in production",
+      "30 days after contract signing",
+      "From January — the day they purchased",
+      "After their first payroll parallel test"
+    ],
+    correct: 2,
+    explain: "Workday charges from day one of purchase regardless of implementation methodology. This is a key reason customers are motivated to go live quickly."
+  },
+  {
+    session: 1,
+    q: "Does Phase X use a Gold tenant?",
+    opts: [
+      "Yes, always — it's required for all Workday deployments",
+      "Only if the customer is implementing Launch Flex",
+      "No — the customer is already live in production, so there is no Gold tenant",
+      "Only for HCM SKUs, not payroll"
+    ],
+    correct: 2,
+    explain: "Gold tenant only exists in New deployments. In Phase X the customer already has a production tenant, so there's no Gold tenant — that's the most important thing to remember about Phase X."
+  },
+  // SESSION 2 - Partner Landscape
+  {
+    session: 2,
+    q: "Which type of deployment partner is MOST likely to grant OSV implementer access to the Workday tenant?",
+    opts: [
+      "Large System Integrators like Deloitte or PWC",
+      "Boutique/regional partners like 3Link",
+      "Workday itself as a deployment partner",
+      "Partners certified for Launch Express only"
+    ],
+    correct: 1,
+    explain: "Boutique partners are the most flexible — they adapt to customer preferences and are less rigid about governance. 3Link in particular often has former OSV staff who know the process well."
+  },
+  {
+    session: 2,
+    q: "What is Top Block's well-known competitive differentiator as a deployment partner?",
+    opts: [
+      "Speed of implementation via pre-built HCM templates",
+      "A data accelerator tool that migrates legacy data to Workday quickly",
+      "Testing automation that speeds up Workday regression cycles",
+      "Dedicated PMO governance and steering committee structure"
+    ],
+    correct: 1,
+    explain: "Top Block is known for their data accelerator tool, which reduces customer effort in data collection and migration — helping keep projects on time."
+  },
+  {
+    session: 2,
+    q: "What happened with Workday's partner certification for Launch Express when Cognizant opted out?",
+    opts: [
+      "Workday suspended the Launch Express program entirely",
+      "Workday focused on the remaining certified partners (including Kainos and Top Block)",
+      "Workday allowed all partners to self-certify",
+      "Cognizant was replaced by Deloitte as the primary Launch Express partner"
+    ],
+    correct: 1,
+    explain: "When Cognizant pulled out of Launch Express, Workday concentrated on the remaining certified partners. Customers don't always get a choice of partner — Workday often assigns them."
+  },
+  {
+    session: 2,
+    q: "When a project has both Workday and Cicero as partners (subcontracting arrangement), who should be OSV's primary point of contact?",
+    opts: [
+      "The Workday sales team",
+      "Whichever partner sent the first email",
+      "The Project Manager — then escalate per the escalation path",
+      "The customer's internal IT lead"
+    ],
+    correct: 2,
+    explain: "TJ made clear: start with the Project Manager as your main point of contact, then follow the escalation path (customer escalation path, partner escalation path). This will be covered more in PM training."
+  },
+  {
+    session: 2,
+    q: "What known issue should OSV raise EARLY with large enterprise deployment partners?",
+    opts: [
+      "Timeline length and number of implementation tenants",
+      "Access to Workday tenants, service center setup, and MFA/SSO requirements",
+      "Whether the customer has HR data ready to load",
+      "Which payroll parallel testing approach they prefer"
+    ],
+    correct: 1,
+    explain: "Jose highlighted this from experience: tenant access, service centers, and MFA/SSO expectations need to be surfaced early — especially with large partners like PWC, Mercer, and Deloitte who are harder to work with."
+  },
+  {
+    session: 2,
+    q: "According to the training, a project manager at a partner who has previously worked with OSV will likely be:",
+    opts: [
+      "More restrictive about following governance rules",
+      "Less experienced with Workday configurations",
+      "More flexible and familiar with OSV's process — making the project smoother",
+      "Required to follow only Workday's standard methodology"
+    ],
+    correct: 2,
+    explain: "Jose's key insight: prior partner experience with OSV makes a huge difference. For example, 3Link staff who came from OSV are immediately flexible — 'tell me who needs access and boom, here it is.'"
+  },
+  // SESSION 3 - Tenant Management
+  {
+    session: 3,
+    q: "What type of tenant is 'Gold' and when does it exist?",
+    opts: [
+      "A permanent production tenant available to all Workday customers",
+      "An implementation tenant only in New deployments that becomes production at go-live",
+      "A test tenant available during Phase X for regression testing",
+      "A partner-managed sandbox that exists for the full project lifecycle"
+    ],
+    correct: 1,
+    explain: "Gold only exists in New deployments. It's a type of IMPL tenant that Workday copies to create production. It gets deleted about a week after go-live — so customers and partners keep it pristine (no transactions!)."
+  },
+  {
+    session: 3,
+    q: "Why do partners typically NOT give customers access to the Gold tenant?",
+    opts: [
+      "It is against Workday's licensing agreement",
+      "To prevent the customer from seeing configuration details",
+      "To keep it pristine — any transactions in Gold persist to production",
+      "Because Gold is owned entirely by the deployment partner"
+    ],
+    correct: 2,
+    explain: "Gold becomes production, so any transactions in Gold will persist. Partners keep it clean — only approved, tested configuration and employee data should be in Gold."
+  },
+  {
+    session: 3,
+    q: "What does a 'Sandbox Preview' tenant do differently from a regular Sandbox?",
+    opts: [
+      "It is permanently available and refreshes only twice a year during release windows",
+      "It refreshes every day and is used for daily configuration testing",
+      "It is only available to large enterprise customers with full-suite SKUs",
+      "It stores only employee data, not configuration"
+    ],
+    correct: 0,
+    explain: "Sandbox Preview refreshes automatically only during the twice-yearly Workday release windows. That's why it's used for Phase Y — there's no risk of losing your configuration unexpectedly, unlike regular Sandbox which refreshes weekly."
+  },
+  {
+    session: 3,
+    q: "What is Customer Central tenant primarily used for?",
+    opts: [
+      "Running payroll in a test environment before go-live",
+      "Storing HR data backups for the customer",
+      "A hub tenant for SSO access to other tenants and migrating configuration between tenants",
+      "The customer's permanent sandbox after going live"
+    ],
+    correct: 2,
+    explain: "Customer Central is a hub tenant — it provides SSO access to other implementation tenants and allows migration of configuration via the Configuration Catalog. It's maintained by the partner PM then transferred to the customer's security lead."
+  },
+  {
+    session: 3,
+    q: "Based on the conversation with Sid, what is the current OSV recommendation regarding Customer Central access for integration consultants?",
+    opts: [
+      "Always request it — it's required for all integration migrations",
+      "Request it only for Phase X projects",
+      "No longer required — it's easier to rebuild the integration configuration from scratch than deal with setup issues",
+      "Only request it when the deployment partner is a large System Integrator"
+    ],
+    correct: 2,
+    explain: "Sid confirmed: Customer Central was meant to let consultants migrate integrations, but setup issues made it more trouble than it was worth. The team agreed it's easier to just rebuild — and the templates should be updated to reflect this."
+  },
+  {
+    session: 3,
+    q: "Implementation tenants (IMPL) are sold in what increment, and what is the approximate cost?",
+    opts: [
+      "Annual contracts at $15,000/year per tenant",
+      "Monthly subscriptions at $500/month regardless of company size",
+      "3-month blocks at approximately $3,500–$5,500/month depending on employee count",
+      "One-time purchase at $10,000 per tenant"
+    ],
+    correct: 2,
+    explain: "Partners and customers can purchase additional IMPL tenants in 3-month blocks. Pricing is roughly $3,500–$5,500 per month depending on number of employees. OSV itself maintained 7–8 IMPL tenants at the time of training."
+  },
+  {
+    session: 3,
+    q: "Implementation Preview tenants are primarily used for what purpose?",
+    opts: [
+      "Day-to-day development work during a new implementation",
+      "Regression testing against upcoming Workday release features (R1/R2) before go-live",
+      "Storing customer data after move to production",
+      "Providing customers read-only access to see configuration progress"
+    ],
+    correct: 1,
+    explain: "Preview tenants contain Workday's upcoming release code. They're used for final regression testing to ensure payroll and configurations still work correctly with new Workday features — typically timed around the spring and fall R1/R2 releases."
+  }
+];
+
+const flashcards = [
+  { term: "Launch Now / Workday Go", def: "Workday's fastest deployment methodology for very small businesses (~1,000 employees). Fixed configuration, 10–16 week timeline. Also called an 'activation.' Being positioned alongside OSV services for new SMB business.", session: 1 },
+  { term: "Launch Express", def: "Mid-market methodology (up to ~3,500 employees). Faster than Launch Flex/Full, with some pre-built accelerators. Partners like Kainos and Top Block are certified for this approach.", session: 1 },
+  { term: "Launch / Launch Flex", def: "Workday's standard methodology for mid-enterprise (~7,500 employees and below). Phased approach with more configuration flexibility than Launch Now.", session: 1 },
+  { term: "Workday Your Way", def: "Workday's most flexible, fully custom deployment methodology. Typically for large or complex enterprises. More expensive due to custom configuration. No size restriction — it's about how much customization a customer wants.", session: 1 },
+  { term: "New Implementation", def: "OSV's most common type — customer not on Workday, implementing a SKU with OSV services for the first time. Includes Gold tenant. Can use any Workday methodology.", session: 1 },
+  { term: "Phase X", def: "Customer already live on a Workday SKU adding another new SKU. No Gold tenant. Typically uses Launch or Your Way. OSV may be brand new or already providing services.", session: 1 },
+  { term: "Phase Y", def: "OSV-only term. Customer is live on Workday payroll and switching service providers (e.g., ADP → OSV). No implementation partner typically needed. Uses Sandbox Preview instead of IMPL tenants.", session: 1 },
+  { term: "Workday SKU", def: "A Workday module/product that can be purchased and implemented. Examples: HCM, US Payroll, Canadian Payroll, UK Payroll, Benefits, Absence, Time Tracking, Financials.", session: 1 },
+  { term: "Gold Tenant", def: "An implementation tenant type that becomes production at go-live (Workday copies it). Only in New deployments. Kept pristine — no transactions. Deleted ~1 week after go-live.", session: 3 },
+  { term: "IMPL Tenant", def: "Implementation tenant — the primary build/config/test environment during a deployment project. Customers typically get several free with their SKU purchase; additional ones can be purchased in 3-month blocks.", session: 3 },
+  { term: "Sandbox Preview", def: "A production-adjacent tenant that auto-refreshes only twice a year during Workday release windows. Cannot be copied to IMPL. Used in Phase Y for safe configuration work without frequent data loss.", session: 3 },
+  { term: "Customer Central", def: "A hub tenant for SSO access to implementation tenants and configuration migration. Currently: OSV no longer recommends requesting integration consultant access because setup issues make it easier to rebuild.", session: 3 },
+  { term: "Implementation Preview Tenant", def: "A special IMPL tenant provisioned to run on upcoming Workday release code. Used for regression testing before R1/R2 releases. Cannot be refreshed like a normal IMPL — must be deleted and reprovisioned.", session: 3 },
+  { term: "Large System Integrator", def: "Big-4 type partners (Deloitte, PWC, KPMG, Mercer, Cognizant). Follow Workday methodology strictly, have strong governance, PMO structures, RAID logs, formal change control. Most difficult for tenant access.", session: 2 },
+  { term: "Boutique/Regional Partner", def: "Smaller partners like 3Link, EMD. Most flexible — adapt to customer preferences, informal governance. Often easier to get tenant access. Former OSV staff at some firms helps a lot.", session: 2 },
+  { term: "Top Block", def: "Medium-sized partner known for their data accelerator tool that migrates legacy system data to Workday efficiently, keeping projects on schedule. Also sometimes pre-builds OSV bank account configurations.", session: 2 },
+  { term: "Kainos", def: "Medium-sized deployment partner whose competitive differentiator is testing automation — they accelerate Workday testing cycles. Certified for Launch Express.", session: 2 },
+  { term: "Parallel Testing", def: "A payroll testing cycle where both the old and new systems run simultaneously to validate payroll outputs. Some partners call it just 'payroll testing.' Typically only one cycle due to timeline constraints.", session: 1 },
+  { term: "Tenant Refresh", def: "A process where implementation tenant data is replaced, typically with a fresh copy of production data. Must be carefully coordinated — any unsaved configuration work will be lost. Timing is critical for OSV.", session: 3 },
+  { term: "Workday DA (Deprecated)", def: "Workday's former Delivery Assurance program that audited partner compliance with methodology. Deprecated a few years ago — now partners, especially boutique ones, have much more freedom in their approach.", session: 2 }
+];
+
+const scenarios = [
+  {
+    tag: "Session 1 · Methodology",
+    scenario: "You're assigned to a new project. The customer has been live on Workday HCM for 2 years and is now implementing Workday US Payroll for the first time. They've been using a third-party payroll provider. Which implementation type is this, and what should you immediately know about tenant management?",
+    options: [
+      "This is a 'New' implementation — expect a Gold tenant and any methodology is possible.",
+      "This is 'Phase X' — there is NO Gold tenant since the customer is already live in production. Expect IMPL tenants for the payroll build, typically Launch or Your Way methodology.",
+      "This is 'Phase Y' — the customer is switching service providers so no implementation partner is needed.",
+      "This is 'Phase X' but a Gold tenant is still provisioned for the new SKU."
+    ],
+    correct: 1,
+    explain: "Phase X = already live, adding a new SKU. The key thing to remember: NO Gold tenant. They're already in production. The new SKU will use IMPL tenants for build/test. Phase Y would be if they were switching providers (like ADP) without adding a new SKU."
+  },
+  {
+    tag: "Session 2 · Partner Landscape",
+    scenario: "It's week 2 of a new project. The deployment partner is Mercer (large System Integrator). You need your integration consultant to access the Workday tenant to begin their work. The PM hasn't responded to your emails about access. What's the right approach?",
+    options: [
+      "Wait — large partners always grant access in week 4. There's no point following up.",
+      "Raise tenant access, service center setup, and any SSO/MFA requirements NOW as known friction points. Follow the partner PM escalation path.",
+      "Bypass the partner PM and contact Workday directly for tenant credentials.",
+      "Tell the integration consultant to use Customer Central access to work around the delay."
+    ],
+    correct: 1,
+    explain: "Jose's real experience: with large SIs like Mercer, access is difficult — and you need to surface it EARLY. Follow the escalation path (partner PM → escalation contact). Also raise service centers and MFA/SSO requirements now, not when you hit the wall later."
+  },
+  {
+    tag: "Session 3 · Tenant Management",
+    scenario: "Your team is on a Phase Y project. The customer has no implementation tenants available. A tenant refresh is coming up. Where should the integration consultant do their configuration work, and what's the risk to watch for?",
+    options: [
+      "Work in Sandbox — it refreshes weekly so configuration should be saved elsewhere before each refresh.",
+      "Work in Gold tenant — it's the safest place.",
+      "Work in Sandbox Preview — it only auto-refreshes twice a year during Workday release windows, so configuration is much safer.",
+      "Delay all work until the customer purchases an IMPL tenant."
+    ],
+    correct: 2,
+    explain: "In Phase Y, Sandbox Preview is the recommended environment because of its infrequent refresh cycle (only at R1/R2 twice a year). Regular Sandbox refreshes weekly (or every 3 weeks with an exemption) — too risky for ongoing configuration work."
+  },
+  {
+    tag: "Session 1 · Launch Now",
+    scenario: "You're supporting a Launch Now (Workday Go) deployment. The customer keeps pushing back on configuration restrictions saying 'We've always done payroll this way and we NEED these custom fields.' The deployment partner is frustrated. What do you know about this situation?",
+    options: [
+      "The customer can request a full refund from Workday and get out of their contract.",
+      "This is extremely common in Launch Now — customers signed up for a restricted, fast config. They CAN switch methodologies, but the cost increase is usually prohibitive. OSV may experience frustration too.",
+      "The partner should simply grant all configuration requests to keep the customer happy.",
+      "Launch Now has no configuration restrictions; the issue is partner inexperience."
+    ],
+    correct: 1,
+    explain: "TJ explicitly called this out: Launch Now customers often resist the restrictions they agreed to. Switching methodologies is technically possible but typically very expensive. OSV can catch customer frustration even though it's mainly a customer-Workday-partner tension."
+  },
+  {
+    tag: "Session 3 · Gold Tenant",
+    scenario: "It's 3 days before go-live. The deployment partner says they're loading the final employee data into Gold and preparing to hand off to production. A team member suggests logging into Gold to 'test a payroll run since we have access.' What do you tell them?",
+    options: [
+      "Go ahead — payroll testing in Gold is standard practice before go-live.",
+      "Only do it if the partner gives written approval.",
+      "Do NOT transact in Gold. Anything entered in Gold persists directly to production. Gold must stay pristine — approved config and approved employee data only.",
+      "It's fine as long as you don't save the results."
+    ],
+    correct: 2,
+    explain: "This is critical! Gold becomes production — Workday literally copies it. Any transaction in Gold (including test payroll runs) will appear in the live production system. Partners keep Gold pristine for exactly this reason."
+  }
+];
+
+const glossaryData = [
+  { term: "New Implementation", def: "Customer not on Workday, implementing a SKU with OSV for the first time. Most common type.", s: 1 },
+  { term: "Phase X", def: "Customer live on Workday adding a new SKU. No Gold tenant.", s: 1 },
+  { term: "Phase Y", def: "OSV-only. Customer live on Workday payroll switching service providers.", s: 1 },
+  { term: "Launch Now / Go", def: "Fastest Workday method. ~1,000 employees. 10–16 weeks. Restricted config.", s: 1 },
+  { term: "Launch Express", def: "Mid-market method. Up to ~3,500 employees. Partner-certified.", s: 1 },
+  { term: "Launch / Launch Flex", def: "Mid-enterprise. Up to ~7,500 employees. Phased approach.", s: 1 },
+  { term: "Workday Your Way", def: "Fully custom deployment. Most expensive. No size limit.", s: 1 },
+  { term: "SKU", def: "A Workday product module (HCM, US Payroll, Benefits, etc.)", s: 1 },
+  { term: "Gold Tenant", def: "IMPL tenant that becomes production at go-live. New deployments only. No transactions!", s: 3 },
+  { term: "IMPL Tenant", def: "Primary build/test environment. Purchased in 3-month blocks (~$3,500–5,500/mo).", s: 3 },
+  { term: "Sandbox Preview", def: "Refreshes only 2x/year. Used for Phase Y and release regression testing.", s: 3 },
+  { term: "Customer Central", def: "Hub tenant for SSO + config migration. Integration consultants no longer need access.", s: 3 },
+  { term: "Implementation Preview", def: "Runs future release code. Used for R1/R2 regression testing. Must delete/reprovision.", s: 3 },
+  { term: "Large SI", def: "Big-4 partners (Deloitte, PWC, KPMG). Strict governance. Hard to get tenant access.", s: 2 },
+  { term: "Boutique Partner", def: "Small regional firms (3Link, EMD). Flexible. Easier access.", s: 2 },
+  { term: "Top Block", def: "Mid-size partner. Known for data accelerator tool.", s: 2 },
+  { term: "Kainos", def: "Mid-size partner. Known for testing automation tools.", s: 2 },
+  { term: "Workday DA", def: "Former partner audit program, now deprecated. Less oversight today.", s: 2 },
+  { term: "Parallel Testing", def: "Old + new payroll run simultaneously to validate outputs. Usually one cycle only.", s: 1 },
+  { term: "Tenant Refresh", def: "IMPL tenant data replaced with fresh copy. Must save config before it happens.", s: 3 },
+  { term: "Full Suite Implementation", def: "Implementing both financials and HCM/payroll SKUs simultaneously.", s: 1 },
+  { term: "Partner PM", def: "Main point of contact for OSV on any deployment project. Key escalation starting point.", s: 2 }
+];
+
+// ============================================================
+// STATE
+// ============================================================
+let currentQ = 0;
+let answered = false;
+let score = 0;
+let correct = 0;
+let streak = 0;
+let fcIndex = 0;
+let fcFlipped = false;
+let fcCards = [...flashcards];
+let scenarioAnswered = new Array(scenarios.length).fill(false);
+let scenarioChosen = new Array(scenarios.length).fill(-1);
+
+// ============================================================
+// TABS
+// ============================================================
+function switchTab(name) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  event.target.classList.add('active');
+}
+
+// ============================================================
+// QUIZ
+// ============================================================
+function renderQuestion() {
+  if (currentQ >= quizData.length) {
+    showComplete();
+    return;
+  }
+  const q = quizData[currentQ];
+  document.getElementById('qCounter').textContent = `Question ${currentQ + 1} of ${quizData.length}`;
+  document.getElementById('progressFill').style.width = `${(currentQ / quizData.length) * 100}%`;
+  
+  const sLabels = ['', 'Session 1', 'Session 2', 'Session 3'];
+  const sCls = ['', 's1', 's2', 's3'];
+  document.getElementById('questionText').innerHTML = 
+    `<span class="pill ${sCls[q.session]}">${sLabels[q.session]}</span><br><br>${q.q}`;
+  
+  const letters = ['A', 'B', 'C', 'D'];
+  const opts = document.getElementById('optionsDiv');
+  opts.innerHTML = '';
+  q.opts.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'option-btn';
+    btn.innerHTML = `<span class="option-letter">${letters[i]}</span>${opt}`;
+    btn.onclick = () => selectAnswer(i);
+    opts.appendChild(btn);
+  });
+  
+  document.getElementById('feedbackDiv').className = 'feedback';
+  document.getElementById('feedbackDiv').textContent = '';
+  document.getElementById('nextBtn').className = 'btn-next';
+  answered = false;
+}
+
+function selectAnswer(idx) {
+  if (answered) return;
+  answered = true;
+  const q = quizData[currentQ];
+  const btns = document.querySelectorAll('.option-btn');
+  const fb = document.getElementById('feedbackDiv');
+  
+  btns.forEach(b => b.disabled = true);
+  
+  if (idx === q.correct) {
+    btns[idx].classList.add('correct');
+    streak++;
+    const points = 10 + (streak > 2 ? 5 * Math.min(streak - 1, 5) : 0);
+    score += points;
+    correct++;
+    fb.className = 'feedback correct-fb show';
+    const bonusMsg = streak > 2 ? ` 🔥 ${streak}-streak bonus! +${points} pts` : ` +${points} pts`;
+    fb.textContent = '✅ Correct! ' + q.explain + bonusMsg;
+  } else {
+    btns[idx].classList.add('wrong');
+    btns[q.correct].classList.add('reveal');
+    streak = 0;
+    fb.className = 'feedback wrong-fb show';
+    fb.textContent = '❌ Not quite. ' + q.explain;
+  }
+  
+  updateScore();
+  document.getElementById('nextBtn').className = 'btn-next show';
+}
+
+function nextQuestion() {
+  currentQ++;
+  renderQuestion();
+}
+
+function updateScore() {
+  document.getElementById('totalScore').textContent = score;
+  document.getElementById('correctCount').textContent = correct;
+  document.getElementById('streakCount').textContent = streak;
+  document.getElementById('quizProgress').textContent = `${Math.min(currentQ + 1, quizData.length)}/${quizData.length}`;
+}
+
+function showComplete() {
+  document.getElementById('quizCard').style.display = 'none';
+  const comp = document.getElementById('completeScreen');
+  comp.style.display = 'block';
+  const pct = Math.round((correct / quizData.length) * 100);
+  document.getElementById('finalScore').textContent = score + ' pts';
+  document.getElementById('finalCorrect').textContent = `${correct}/${quizData.length} Correct (${pct}%)`;
+  
+  let badge, msg;
+  if (pct >= 90) { badge = '🏆 Workday Expert'; msg = 'Outstanding! You clearly paid attention in those sessions.'; }
+  else if (pct >= 75) { badge = '⭐ Well Done'; msg = 'Strong showing! Review the ones you missed and you\'ll be an expert in no time.'; }
+  else if (pct >= 60) { badge = '📚 Getting There'; msg = 'Good foundation. Go back through the flashcards and try again!'; }
+  else { badge = '🔄 Keep Practicing'; msg = 'These are tricky topics. Review the glossary and give it another shot!'; }
+  
+  document.getElementById('finalBadge').textContent = badge;
+  document.getElementById('finalMsg').textContent = msg;
+}
+
+function restartQuiz() {
+  currentQ = 0; score = 0; correct = 0; streak = 0;
+  document.getElementById('quizCard').style.display = 'block';
+  document.getElementById('completeScreen').style.display = 'none';
+  updateScore();
+  renderQuestion();
+}
+
+// ============================================================
+// FLASHCARDS
+// ============================================================
+function renderFlashcard() {
+  const card = fcCards[fcIndex];
+  document.getElementById('fcTerm').textContent = card.term;
+  document.getElementById('fcDef').textContent = card.def;
+  document.getElementById('fcCount').textContent = `${fcIndex + 1} / ${fcCards.length}`;
+  document.getElementById('flashcardInner').classList.remove('flipped');
+  fcFlipped = false;
+}
+
+function flipCard() {
+  fcFlipped = !fcFlipped;
+  document.getElementById('flashcardInner').classList.toggle('flipped', fcFlipped);
+}
+
+function nextCard() {
+  fcIndex = (fcIndex + 1) % fcCards.length;
+  renderFlashcard();
+}
+
+function prevCard() {
+  fcIndex = (fcIndex - 1 + fcCards.length) % fcCards.length;
+  renderFlashcard();
+}
+
+function shuffleCards() {
+  for (let i = fcCards.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [fcCards[i], fcCards[j]] = [fcCards[j], fcCards[i]];
+  }
+  fcIndex = 0;
+  renderFlashcard();
+}
+
+// ============================================================
+// SCENARIOS
+// ============================================================
+function buildScenarios() {
+  const container = document.getElementById('scenarioContainer');
+  const letters = ['A', 'B', 'C', 'D'];
+  
+  scenarios.forEach((sc, si) => {
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.id = `sc-card-${si}`;
+    
+    let optionsHtml = sc.options.map((opt, oi) => 
+      `<button class="option-btn" id="sc-${si}-opt-${oi}" onclick="pickScenario(${si}, ${oi})">
+        <span class="option-letter">${letters[oi]}</span>${opt}
+      </button>`
+    ).join('');
+    
+    card.innerHTML = `
+      <div class="card-header">
+        <div class="card-icon purple">🧩</div>
+        <div>
+          <div class="card-title">Scenario ${si + 1}</div>
+          <div class="card-desc">${sc.tag}</div>
+        </div>
+      </div>
+      <div class="scenario-box">
+        <span class="scenario-tag">Real-World Situation</span>
+        <div class="scenario-text">${sc.scenario}</div>
+      </div>
+      <div class="options">${optionsHtml}</div>
+      <div class="feedback" id="sc-fb-${si}"></div>
+    `;
+    container.appendChild(card);
+  });
+}
+
+function pickScenario(si, oi) {
+  if (scenarioAnswered[si]) return;
+  scenarioAnswered[si] = true;
+  const sc = scenarios[si];
+  const fb = document.getElementById(`sc-fb-${si}`);
+  
+  for (let i = 0; i < sc.options.length; i++) {
+    const btn = document.getElementById(`sc-${si}-opt-${i}`);
+    btn.disabled = true;
+    if (i === oi && oi === sc.correct) btn.classList.add('correct');
+    else if (i === oi) btn.classList.add('wrong');
+    else if (i === sc.correct) btn.classList.add('reveal');
+  }
+  
+  if (oi === sc.correct) {
+    fb.className = 'feedback correct-fb show';
+    fb.textContent = '✅ Correct! ' + sc.explain;
+    score += 15; correct++; streak++;
+  } else {
+    fb.className = 'feedback wrong-fb show';
+    fb.textContent = '❌ ' + sc.explain;
+    streak = 0;
+  }
+  updateScore();
+}
+
+// ============================================================
+// GLOSSARY
+// ============================================================
+function buildGlossary() {
+  const grid = document.getElementById('glossGrid');
+  const sCls = ['', 's1', 's2', 's3'];
+  const sLabels = ['', 'Session 1', 'Session 2', 'Session 3'];
+  
+  glossaryData.forEach(item => {
+    const div = document.createElement('div');
+    div.className = 'gloss-item';
+    div.innerHTML = `
+      <div class="gloss-term">${item.term} <span class="pill ${sCls[item.s]}">${sLabels[item.s]}</span></div>
+      <div class="gloss-def">${item.def}</div>
+    `;
+    grid.appendChild(div);
+  });
+}
+
+// ============================================================
+// INIT
+// ============================================================
+renderQuestion();
+renderFlashcard();
+buildScenarios();
+buildGlossary();
+</script>
+</body>
+</html>
